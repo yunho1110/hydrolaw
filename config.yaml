@@ -1,0 +1,35 @@
+# HydroLaw-AI 설정 파일
+# ------------------------------------------------------------
+# llm.provider: "openai" | "anthropic" | "none"
+#   "none"으로 두면 LLM API 없이도 검색된 근거만으로 응답을 조립합니다.
+#   (API 키가 없는 상태에서도 파이프라인 전체를 테스트할 수 있도록 하기 위함)
+# ------------------------------------------------------------
+
+llm:
+  provider: openai
+  model: gpt-4o-mini
+  api_key_env: OPENAI_API_KEY   # 이 이름의 환경변수에서 키를 읽습니다
+  temperature: 0.1
+
+embedding:
+  # 다국어 지원 + 비교적 가벼운 로컬 임베딩 모델 (API 키 불필요)
+  model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+vector_store:
+  path: ./vector_store
+  collection_name: water_env_laws
+
+retrieval:
+  top_k: 4
+  chunk_size: 400        # 문자 수 기준
+  chunk_overlap: 80
+
+data:
+  laws_dir: ./data/laws
+  emission_standards_file: ./data/emission_standards.json
+
+disclaimer: >
+  본 결과는 법률 자문이 아니며 참고용 정보입니다. 실제 적용 전 반드시
+  관할 지자체 담당 부서 또는 환경 전문가의 확인을 거치시기 바랍니다.
+  본 저장소의 법령/조례 수치 데이터는 예시(더미) 데이터일 수 있으므로,
+  실제 배출허용기준은 국가법령정보센터(law.go.kr)에서 반드시 재확인하세요.
