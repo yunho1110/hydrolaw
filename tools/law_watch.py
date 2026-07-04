@@ -40,9 +40,16 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 from xml.etree import ElementTree as ET
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
 from urllib.parse import urlencode
+
+# law.go.kr는 Referer/User-Agent 헤더가 없는 요청을
+# "필수입력요소 검증 실패"로 거부하므로 반드시 포함해야 한다.
+REQUEST_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (HydroLaw-AI law-watch)",
+    "Referer": "https://open.law.go.kr/",
+}
 
 
 # 기준선 파일 경로
@@ -95,7 +102,8 @@ def fetch_law_info_from_api(oc):
     full_url = f"{url}?{query_string}"
 
     try:
-        with urlopen(full_url, timeout=10) as response:
+        req = Request(full_url, headers=REQUEST_HEADERS)
+        with urlopen(req, timeout=10) as response:
             xml_data = response.read()
             return parse_law_response(xml_data)
     except HTTPError as e:
@@ -115,52 +123,57 @@ def parse_law_response(xml_data):
     """
     법령정보센터 DRF 응답 XML 파싱
 
-    예상 구조:
-    <root>
-        <law_list>
-            <law>
-                <law_no>환경부령 제1184호</law_no>
-                <enforcement_date>2025-08-07</enforcement_date>
-                ...
-            </law>
+    실제 DRF 응답 구조 (2026-07 확인, 한글 태그):
+    <LawSearch>
+        <law id="1">
+            <법령명한글><![CDATA[물환경보전법 시행규칙]]></법령명한글>
+            <공포일자>20260622</공포일자>
+            <공포번호>00042</공포번호>
+            <법령구분명>기후에너지환경부령</법령구분명>
+            <제개정구분명>타법개정</제개정구분명>
             ...
-        </law_list>
-    </root>
+        </law>
+    </LawSearch>
 
     Returns:
         (enforcement_number, enforcement_date) 또는 (None, None)
     """
     try:
         root = ET.fromstring(xml_data)
-        # 네임스페이스 제거 후 가장 최신 항목 선택
-        # 실제 API는 내림차순 정렬 가능
-        for law in root.findall('.//law'):
-            law_no_elem = law.find('law_no')
-            date_elem = law.find('enforcement_date')
-
-            if law_no_elem is not None and date_elem is not None:
-                law_no = (law_no_elem.text or "").strip()
-                date = (date_elem.text or "").strip()
-
-                if law_no and date and '환경부령' in law_no:
-                    return law_no, date
-
-        # 속성 기반 파싱 (API 변경 대비)
-        for elem in root.iter():
-            if 'law_no' in elem.tag.lower() or 'lawno' in elem.tag.lower():
-                if elem.text and '환경부령' in elem.text:
-                    # 같은 부모의 date 찾기
-                    parent = elem
-                    for _ in range(3):  # 최대 3단계 위로
-                        date = parent.find('.//enforcement_date')
-                        if date is not None and date.text:
-                            return elem.text.strip(), date.text.strip()
-                        parent = parent if parent == root else root
-
-        return None, None
     except ET.ParseError as e:
         print(f"XML 파싱 오류: {e}", file=sys.stderr)
         return None, None
+
+    best = None  # (law_no, date)
+    for law in root.iter('law'):
+        name = (law.findtext('법령명한글') or '').strip()
+        date_raw = (law.findtext('공포일자') or '').strip()
+        no_raw = (law.findtext('공포번호') or '').strip()
+        kind = (law.findtext('법령구분명') or '').strip() or '부령'
+        rev_type = (law.findtext('제개정구분명') or '').strip()
+
+        if '물환경보전법 시행규칙' not in name or not date_raw:
+            continue
+
+        # 공포일자 YYYYMMDD → YYYY-MM-DD (state 파일 형식과 통일)
+        if len(date_raw) == 8 and date_raw.isdigit():
+            date = f"{date_raw[:4]}-{date_raw[4:6]}-{date_raw[6:8]}"
+        else:
+            date = date_raw
+
+        try:
+            law_no = f"{kind} 제{int(no_raw)}호"
+        except ValueError:
+            law_no = f"{kind} {no_raw}".strip()
+        if rev_type:
+            law_no += f" ({rev_type})"
+
+        if best is None or date > best[1]:
+            best = (law_no, date)
+
+    if best:
+        return best
+    return None, None
 
 
 def check_update(current_state, new_law_no, new_date):
