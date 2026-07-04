@@ -1,0 +1,60 @@
+{
+  "meta": {
+    "source": "물환경보전법 시행규칙 별표 13 (예시/더미 데이터)",
+    "law_url": "https://www.law.go.kr/",
+    "verified_date": "2026-01-01",
+    "revision": "환경부령 제0호 (예시)",
+    "is_dummy": true
+  },
+  "region_types": {
+    "청정지역": "수질 환경기준 매우 좋음(Ia) 등급 유지가 필요한 지역 (가장 엄격)",
+    "가지역": "수질 환경기준 좋음~약간 좋음 등급 지역",
+    "나지역": "수질 환경기준 보통 이하 지역",
+    "특례지역": "공공폐수처리시설 방류수 등 별도 특례가 적용되는 지역"
+  },
+  "size_categories": {
+    "large": "1일 폐수배출량 2,000㎥ 이상",
+    "small": "1일 폐수배출량 2,000㎥ 미만"
+  },
+  "standards": [
+    {"pollutant": "BOD", "unit": "mg/L", "region": "청정지역", "size": "large", "limit": 30},
+    {"pollutant": "BOD", "unit": "mg/L", "region": "청정지역", "size": "small", "limit": 40},
+    {"pollutant": "BOD", "unit": "mg/L", "region": "가지역", "size": "large", "limit": 60},
+    {"pollutant": "BOD", "unit": "mg/L", "region": "가지역", "size": "small", "limit": 80},
+    {"pollutant": "BOD", "unit": "mg/L", "region": "나지역", "size": "large", "limit": 80},
+    {"pollutant": "BOD", "unit": "mg/L", "region": "나지역", "size": "small", "limit": 120},
+    {"pollutant": "BOD", "unit": "mg/L", "region": "특례지역", "size": "large", "limit": 30},
+    {"pollutant": "BOD", "unit": "mg/L", "region": "특례지역", "size": "small", "limit": 30},
+
+    {"pollutant": "TOC", "unit": "mg/L", "region": "청정지역", "size": "large", "limit": 25},
+    {"pollutant": "TOC", "unit": "mg/L", "region": "청정지역", "size": "small", "limit": 30},
+    {"pollutant": "TOC", "unit": "mg/L", "region": "가지역", "size": "large", "limit": 40},
+    {"pollutant": "TOC", "unit": "mg/L", "region": "가지역", "size": "small", "limit": 50},
+    {"pollutant": "TOC", "unit": "mg/L", "region": "나지역", "size": "large", "limit": 50},
+    {"pollutant": "TOC", "unit": "mg/L", "region": "나지역", "size": "small", "limit": 75},
+    {"pollutant": "TOC", "unit": "mg/L", "region": "특례지역", "size": "large", "limit": 25},
+    {"pollutant": "TOC", "unit": "mg/L", "region": "특례지역", "size": "small", "limit": 25},
+
+    {"pollutant": "SS", "unit": "mg/L", "region": "청정지역", "size": "large", "limit": 30},
+    {"pollutant": "SS", "unit": "mg/L", "region": "청정지역", "size": "small", "limit": 40},
+    {"pollutant": "SS", "unit": "mg/L", "region": "가지역", "size": "large", "limit": 60},
+    {"pollutant": "SS", "unit": "mg/L", "region": "가지역", "size": "small", "limit": 80},
+    {"pollutant": "SS", "unit": "mg/L", "region": "나지역", "size": "large", "limit": 80},
+    {"pollutant": "SS", "unit": "mg/L", "region": "나지역", "size": "small", "limit": 120},
+    {"pollutant": "SS", "unit": "mg/L", "region": "특례지역", "size": "large", "limit": 30},
+    {"pollutant": "SS", "unit": "mg/L", "region": "특례지역", "size": "small", "limit": 30},
+
+    {"pollutant": "T-N", "unit": "mg/L", "region": "청정지역", "size": "large", "limit": 30},
+    {"pollutant": "T-N", "unit": "mg/L", "region": "가지역", "size": "large", "limit": 60},
+    {"pollutant": "T-N", "unit": "mg/L", "region": "나지역", "size": "large", "limit": 60},
+
+    {"pollutant": "T-P", "unit": "mg/L", "region": "청정지역", "size": "large", "limit": 4},
+    {"pollutant": "T-P", "unit": "mg/L", "region": "가지역", "size": "large", "limit": 8},
+    {"pollutant": "T-P", "unit": "mg/L", "region": "나지역", "size": "large", "limit": 8}
+  ],
+  "industry_aliases": {
+    "세차장": ["세차시설", "자동차 세차", "세차업"],
+    "식품제조": ["식품공장", "식품제조업", "식품가공"],
+    "도금": ["도금업", "표면처리", "전기도금"]
+  }
+}

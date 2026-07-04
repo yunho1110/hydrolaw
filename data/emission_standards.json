@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "source": "물환경보전법 시행규칙 별표 13 (수질오염물질의 배출허용기준, 제34조 관련)",
+    "law_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsId=007575",
+    "verified_date": "2026-07-04",
+    "revision": "환경부령 (별표 13 최종 개정 2021. 12. 10.) — BOD/TOC/SS 수치는 2020. 1. 1.부터 적용되는 기준(COD→TOC 전환) 그대로 현행 유지. 시행규칙 본문은 이후에도 개정(예: 2025. 8. 7. 환경부령 제1184호 등)되었으나 별표 13의 BOD/TOC/SS·총질소·총인 수치표는 변경되지 않음.",
+    "is_dummy": false
+  },
+  "region_types": {
+    "청정지역": "수질 및 수생태계 환경기준 매우 좋음(Ia)등급 정도의 수질을 보전하여야 한다고 인정되는 수역에 영향을 미치는 지역으로 환경부장관이 고시",
+    "가지역": "수질 및 수생태계 환경기준 좋음(Ib), 약간 좋음(II)등급 정도의 수질을 보전하여야 한다고 인정되는 지역으로 환경부장관이 고시",
+    "나지역": "수질 및 수생태계 환경기준 보통(III), 약간 나쁨(IV), 나쁨(V)등급 정도의 수질을 보전하여야 한다고 인정되는 지역으로 환경부장관이 고시",
+    "특례지역": "환경부장관이 공동처리구역으로 지정하는 지역 및 시장·군수가 농공단지로 지정하는 지역"
+  },
+  "size_categories": {
+    "large": "1일 폐수배출량 2,000㎥ 이상",
+    "small": "1일 폐수배출량 2,000㎥ 미만"
+  },
+  "standards": [
+    { "pollutant": "BOD", "unit": "mg/L", "region": "청정지역", "size": "large", "limit": 30 },
+    { "pollutant": "BOD", "unit": "mg/L", "region": "청정지역", "size": "small", "limit": 40 },
+    { "pollutant": "BOD", "unit": "mg/L", "region": "가지역", "size": "large", "limit": 60 },
+    { "pollutant": "BOD", "unit": "mg/L", "region": "가지역", "size": "small", "limit": 80 },
+    { "pollutant": "BOD", "unit": "mg/L", "region": "나지역", "size": "large", "limit": 80 },
+    { "pollutant": "BOD", "unit": "mg/L", "region": "나지역", "size": "small", "limit": 120 },
+    { "pollutant": "BOD", "unit": "mg/L", "region": "특례지역", "size": "large", "limit": 30 },
+    { "pollutant": "BOD", "unit": "mg/L", "region": "특례지역", "size": "small", "limit": 30 },
+
+    { "pollutant": "TOC", "unit": "mg/L", "region": "청정지역", "size": "large", "limit": 25 },
+    { "pollutant": "TOC", "unit": "mg/L", "region": "청정지역", "size": "small", "limit": 30 },
+    { "pollutant": "TOC", "unit": "mg/L", "region": "가지역", "size": "large", "limit": 40 },
+    { "pollutant": "TOC", "unit": "mg/L", "region": "가지역", "size": "small", "limit": 50 },
+    { "pollutant": "TOC", "unit": "mg/L", "region": "나지역", "size": "large", "limit": 50 },
+    { "pollutant": "TOC", "unit": "mg/L", "region": "나지역", "size": "small", "limit": 75 },
+    { "pollutant": "TOC", "unit": "mg/L", "region": "특례지역", "size": "large", "limit": 25 },
+    { "pollutant": "TOC", "unit": "mg/L", "region": "특례지역", "size": "small", "limit": 25 },
+
+    { "pollutant": "SS", "unit": "mg/L", "region": "청정지역", "size": "large", "limit": 30 },
+    { "pollutant": "SS", "unit": "mg/L", "region": "청정지역", "size": "small", "limit": 40 },
+    { "pollutant": "SS", "unit": "mg/L", "region": "가지역", "size": "large", "limit": 60 },
+    { "pollutant": "SS", "unit": "mg/L", "region": "가지역", "size": "small", "limit": 80 },
+    { "pollutant": "SS", "unit": "mg/L", "region": "나지역", "size": "large", "limit": 80 },
+    { "pollutant": "SS", "unit": "mg/L", "region": "나지역", "size": "small", "limit": 120 },
+    { "pollutant": "SS", "unit": "mg/L", "region": "특례지역", "size": "large", "limit": 30 },
+    { "pollutant": "SS", "unit": "mg/L", "region": "특례지역", "size": "small", "limit": 30 },
+
+    { "pollutant": "T-N", "unit": "mg/L", "region": "청정지역", "size": "large", "limit": 30 },
+    { "pollutant": "T-N", "unit": "mg/L", "region": "청정지역", "size": "small", "limit": 30 },
+    { "pollutant": "T-N", "unit": "mg/L", "region": "가지역", "size": "large", "limit": 60 },
+    { "pollutant": "T-N", "unit": "mg/L", "region": "가지역", "size": "small", "limit": 60 },
+    { "pollutant": "T-N", "unit": "mg/L", "region": "나지역", "size": "large", "limit": 60 },
+    { "pollutant": "T-N", "unit": "mg/L", "region": "나지역", "size": "small", "limit": 60 },
+    { "pollutant": "T-N", "unit": "mg/L", "region": "특례지역", "size": "large", "limit": 60 },
+    { "pollutant": "T-N", "unit": "mg/L", "region": "특례지역", "size": "small", "limit": 60 },
+
+    { "pollutant": "T-P", "unit": "mg/L", "region": "청정지역", "size": "large", "limit": 4 },
+    { "pollutant": "T-P", "unit": "mg/L", "region": "청정지역", "size": "small", "limit": 4 },
+    { "pollutant": "T-P", "unit": "mg/L", "region": "가지역", "size": "large", "limit": 8 },
+    { "pollutant": "T-P", "unit": "mg/L", "region": "가지역", "size": "small", "limit": 8 },
+    { "pollutant": "T-P", "unit": "mg/L", "region": "나지역", "size": "large", "limit": 8 },
+    { "pollutant": "T-P", "unit": "mg/L", "region": "나지역", "size": "small", "limit": 8 },
+    { "pollutant": "T-P", "unit": "mg/L", "region": "특례지역", "size": "large", "limit": 8 },
+    { "pollutant": "T-P", "unit": "mg/L", "region": "특례지역", "size": "small", "limit": 8 }
+  ],
+  "industry_aliases": {
+    "세차장": ["세차시설", "자동차 세차", "세차", "운수장비 수선 및 세차 또는 세척시설"],
+    "식품제조": ["식품공장", "식품제조업", "기타 식품 제조시설", "과실·채소 가공 및 저장·처리시설", "도축, 육류·수산물 가공 및 저장·처리시설"],
+    "도금": ["도금업", "표면처리", "도금시설"],
+    "세탁": ["세탁업", "세탁소", "세탁시설"],
+    "축산": ["축산농가", "축산폐수"]
+  }
+}

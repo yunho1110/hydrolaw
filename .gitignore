@@ -1,0 +1,26 @@
+# HydroLaw-AI
+
+# 벡터/검색 인덱스 (재생성 가능)
+vector_store/
+*/vector_store/
+bm25_index.json
+
+# 임시 config (data_sample 테스트용)
+config.sample.yaml
+*.tmp.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 가상환경
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
