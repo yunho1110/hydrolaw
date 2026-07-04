@@ -1,0 +1,48 @@
+name: 물환경보전법 시행규칙 개정 감시
+
+on:
+  schedule:
+    # 매주 월요일 오전 9시 KST (일요일 오후 12시 UTC)
+    - cron: '0 0 * * 0'
+
+  workflow_dispatch:
+    # 수동 트리거 지원
+
+jobs:
+  law-watch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 리포지토리 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Python 설정
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 물환경보전법 시행규칙 개정 감지
+        env:
+          LAW_OC: ${{ secrets.LAW_OC }}
+        run: |
+          if [ -z "$LAW_OC" ]; then
+            echo "⚠️  LAW_OC 시크릿이 설정되지 않았습니다."
+            echo "https://open.law.go.kr에서 API 인증 코드를 발급받은 후"
+            echo "GitHub 저장소 Settings > Secrets > New repository secret에서"
+            echo "이름: LAW_OC, 값: <발급받은 OC 코드> 로 추가하세요."
+            exit 2
+          fi
+          python3 tools/law_watch.py
+
+      - name: 개정 감지 시 알림
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // law-watch 단계가 실패(exit 1)하면 여기 도달
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ 물환경보전법 시행규칙 개정이 감지되었습니다. data/emission_standards.json 및 data/laws/ 재검증이 필요합니다.'
+            });

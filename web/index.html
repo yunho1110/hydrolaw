@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>HydroLaw-AI · 물환경 규제 준수 도우미</title>
+<style>
+  :root{
+    --deep: #063b4a;
+    --teal: #0e7c86;
+    --teal-2: #12a3ac;
+    --aqua: #5fd4d0;
+    --aqua-light: #e3f7f6;
+    --bg: #f2fbfa;
+    --card: #ffffff;
+    --ink: #0b2a33;
+    --sub: #4c6b73;
+    --line: #d9eeec;
+    --warn-bg: #fff6e0;
+    --warn-ink: #7a5a00;
+    --radius: 14px;
+    --shadow: 0 4px 18px rgba(6, 59, 74, 0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    background: linear-gradient(180deg, var(--aqua-light) 0%, var(--bg) 220px, var(--bg) 100%);
+    color: var(--ink);
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+  }
+  .app{
+    width:100%;
+    max-width:720px;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+    background: var(--bg);
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    padding: 18px 18px 14px;
+    background: linear-gradient(135deg, var(--deep), var(--teal));
+    color:#fff;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top:0;
+    z-index: 20;
+  }
+  header .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  header .brand .logo{
+    font-size:26px;
+    line-height:1;
+  }
+  header h1{
+    margin:0;
+    font-size:19px;
+    font-weight:800;
+    letter-spacing:-0.2px;
+  }
+  header p.tag{
+    margin:6px 0 0;
+    font-size:13px;
+    color: #d7f3f1;
+    line-height:1.5;
+  }
+
+  /* ---------- Industry chips ---------- */
+  .section-label{
+    font-size:12px;
+    font-weight:700;
+    color: var(--sub);
+    margin: 14px 18px 6px;
+    letter-spacing:0.2px;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    padding: 0 18px;
+  }
+  .chip{
+    border:1px solid var(--line);
+    background: var(--card);
+    color: var(--teal);
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    transition: transform .08s ease, background .15s ease, color .15s ease;
+    user-select:none;
+  }
+  .chip:hover{ background: var(--teal); color:#fff; }
+  .chip:active{ transform: scale(0.96); }
+  .chip.industry{
+    background: #fff;
+    border-color: var(--teal-2);
+  }
+  .chip.faq{
+    background: var(--aqua-light);
+    border-color: transparent;
+    color: var(--deep);
+  }
+  .chip.faq:hover{ background: var(--teal-2); color:#fff; }
+
+  /* ---------- Chat area ---------- */
+  .chat{
+    flex:1;
+    padding: 16px 18px 8px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    overflow-y:auto;
+  }
+  .msg{
+    max-width: 88%;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    animation: fadeIn .18s ease;
+  }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+  .msg.user{ align-self:flex-end; align-items:flex-end; }
+  .msg.bot{ align-self:flex-start; align-items:flex-start; }
+
+  .bubble{
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    font-size:14.5px;
+    line-height:1.6;
+    box-shadow: var(--shadow);
+    word-break: break-word;
+  }
+  .msg.user .bubble{
+    background: linear-gradient(135deg, var(--teal-2), var(--teal));
+    color:#fff;
+    border-bottom-right-radius:4px;
+  }
+  .msg.bot .bubble{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-bottom-left-radius:4px;
+    color: var(--ink);
+  }
+  .msg.bot .bubble.welcome{
+    background: var(--aqua-light);
+    border-color: transparent;
+  }
+
+  .bubble table{
+    border-collapse: collapse;
+    width:100%;
+    margin: 8px 0;
+    font-size:13.5px;
+  }
+  .bubble th, .bubble td{
+    border:1px solid var(--line);
+    padding:6px 8px;
+    text-align:center;
+  }
+  .bubble th{
+    background: var(--aqua-light);
+    color: var(--deep);
+    font-weight:700;
+  }
+  .bubble tr:nth-child(even) td{ background: #fafffe; }
+
+  .bubble .section-title{
+    display:block;
+    font-weight:800;
+    color: var(--deep);
+    margin: 10px 0 4px;
+  }
+  .bubble .section-title:first-child{ margin-top:0; }
+  .bubble .bullet{
+    display:block;
+    margin: 2px 0 2px 4px;
+    color: var(--ink);
+  }
+  .bubble .rule{
+    border:none;
+    border-top:1px dashed var(--line);
+    margin: 10px 0;
+  }
+  .bubble strong{ color: var(--deep); }
+
+  .disclaimer{
+    font-size:11px;
+    color: var(--sub);
+    background: #f4fbfa;
+    border: 1px dashed var(--line);
+    padding: 6px 9px;
+    border-radius: 8px;
+    max-width:100%;
+  }
+  .placeholder-warn{
+    font-size:11.5px;
+    color: var(--warn-ink);
+    background: var(--warn-bg);
+    border: 1px solid #f0d894;
+    padding: 6px 9px;
+    border-radius: 8px;
+  }
+
+  .loading-bubble{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    border-bottom-left-radius:4px;
+    box-shadow: var(--shadow);
+    width: fit-content;
+  }
+  .dot{
+    width:7px;height:7px;border-radius:50%;
+    background: var(--teal-2);
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  .dot:nth-child(2){ animation-delay: .15s; }
+  .dot:nth-child(3){ animation-delay: .3s; }
+  @keyframes bounce{
+    0%,80%,100%{ transform: scale(0.6); opacity:.5; }
+    40%{ transform: scale(1); opacity:1; }
+  }
+
+  /* ---------- Input bar ---------- */
+  .inputbar{
+    padding: 10px 14px calc(12px + env(safe-area-inset-bottom));
+    background: var(--card);
+    border-top: 1px solid var(--line);
+    display:flex;
+    gap:8px;
+    align-items:center;
+    position: sticky;
+    bottom:0;
+  }
+  .inputbar input[type="text"]{
+    flex:1;
+    padding: 12px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    font-size:14.5px;
+    outline:none;
+    color: var(--ink);
+  }
+  .inputbar input[type="text"]:focus{
+    border-color: var(--teal-2);
+    background:#fff;
+  }
+  .inputbar button{
+    border:none;
+    background: linear-gradient(135deg, var(--teal-2), var(--teal));
+    color:#fff;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    font-size:18px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    box-shadow: 0 2px 8px rgba(14,124,134,0.35);
+    transition: transform .08s ease;
+  }
+  .inputbar button:active{ transform: scale(0.92); }
+  .inputbar button:disabled{ opacity:.5; cursor:default; }
+
+  /* ---------- Scrollbar (subtle) ---------- */
+  .chat::-webkit-scrollbar{ width:6px; }
+  .chat::-webkit-scrollbar-thumb{ background: var(--line); border-radius:4px; }
+
+  @media (max-width: 400px){
+    header{ padding: 14px 14px 12px; }
+    .section-label{ margin: 12px 14px 6px; }
+    .chip-row{ padding: 0 14px; }
+    .chat{ padding: 14px 14px 6px; }
+    .inputbar{ padding: 8px 10px calc(10px + env(safe-area-inset-bottom)); }
+    .msg{ max-width: 94%; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <span class="logo">💧</span>
+      <h1>HydroLaw-AI</h1>
+    </div>
+    <p class="tag">세차장·식품제조 등 소상공인을 위한 물환경 규제 준수 챗봇 — 배출허용기준을 자연어로 바로 확인하세요.</p>
+  </header>
+
+  <div class="section-label">업종 선택</div>
+  <div class="chip-row" id="industryChips">
+    <button type="button" class="chip industry" data-q="세차장을 운영 중인데 폐수 배출허용기준이 궁금합니다">🚗 세차장</button>
+    <button type="button" class="chip industry" data-q="식품제조업 공장인데 BOD와 SS 배출허용기준이 궁금합니다">🍱 식품제조</button>
+    <button type="button" class="chip industry" data-q="도금업체인데 배출허용기준이 궁금합니다">🔩 도금</button>
+    <button type="button" class="chip industry" data-q="세탁업을 운영 중인데 배출허용기준이 궁금합니다">🧺 세탁</button>
+    <button type="button" class="chip industry" data-q="축산업(가축분뇨) 배출허용기준이 궁금합니다">🐄 축산</button>
+  </div>
+
+  <div class="section-label">자주 묻는 질문</div>
+  <div class="chip-row" id="faqChips">
+    <button type="button" class="chip faq" data-q="세차장을 운영 중인데 BOD 기준이 궁금합니다">세차장 BOD 기준은?</button>
+    <button type="button" class="chip faq" data-q="COD 기준은 어떻게 되나요?">COD 기준은?</button>
+    <button type="button" class="chip faq" data-q="폐수 배출시설 허가는 어떻게 받나요?">배출시설 허가 절차는?</button>
+    <button type="button" class="chip faq" data-q="배출허용기준을 위반하면 어떤 행정처분을 받나요?">위반 시 행정처분은?</button>
+  </div>
+
+  <div class="chat" id="chat">
+    <div class="msg bot">
+      <div class="bubble welcome">
+        안녕하세요! 👋 <strong>HydroLaw-AI</strong>입니다.<br>
+        운영 중이신 업종이나 궁금하신 배출허용기준을 자연어로 편하게 물어보세요.<br>
+        예) <em>"세차장을 운영 중인데 BOD 기준이 궁금합니다"</em>
+      </div>
+    </div>
+  </div>
+
+  <form class="inputbar" id="inputForm" autocomplete="off">
+    <input type="text" id="queryInput" placeholder="질문을 입력하세요 (예: 세차장 BOD 기준이 궁금합니다)" maxlength="500">
+    <button type="submit" id="sendBtn" aria-label="전송">➤</button>
+  </form>
+
+</div>
+
+<script>
+(function(){
+  const chat = document.getElementById('chat');
+  const form = document.getElementById('inputForm');
+  const input = document.getElementById('queryInput');
+  const sendBtn = document.getElementById('sendBtn');
+
+  function scrollToBottom(){
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function escapeHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ---- 아주 단순한 마크다운/구획 파서 ----
+  // 지원: "| ... |" 표, "■ 제목" 섹션, "· " / "- " 불릿, "───" 구분선, **강조**
+  function renderAnswer(raw){
+    const text = String(raw || '');
+    const lines = text.split(/\n/);
+    let html = '';
+    let i = 0;
+
+    function inline(s){
+      s = escapeHtml(s);
+      s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      return s;
+    }
+
+    while (i < lines.length) {
+      let line = lines[i];
+
+      // 구분선 (─── 또는 --- 3개 이상)
+      if (/^[─—-]{3,}\s*$/.test(line.trim())) {
+        html += '<hr class="rule">';
+        i++;
+        continue;
+      }
+
+      // 표 블록: 연속된 "| ... |" 라인
+      if (/^\s*\|.*\|\s*$/.test(line)) {
+        const tableLines = [];
+        while (i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i])) {
+          tableLines.push(lines[i].trim());
+          i++;
+        }
+        // 구분행(|---|---|) 제거
+        const rows = tableLines
+          .map(l => l.replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim()))
+          .filter(cols => !cols.every(c => /^:?-+:?$/.test(c)));
+        if (rows.length) {
+          html += '<table>';
+          html += '<thead><tr>' + rows[0].map(c => `<th>${inline(c)}</th>`).join('') + '</tr></thead>';
+          if (rows.length > 1) {
+            html += '<tbody>' + rows.slice(1).map(r =>
+              '<tr>' + r.map(c => `<td>${inline(c)}</td>`).join('') + '</tr>'
+            ).join('') + '</tbody>';
+          }
+          html += '</table>';
+        }
+        continue;
+      }
+
+      const trimmed = line.trim();
+
+      // 섹션 제목: ■ 로 시작
+      if (/^■/.test(trimmed)) {
+        html += `<span class="section-title">${inline(trimmed)}</span>`;
+        i++;
+        continue;
+      }
+
+      // 불릿: · 또는 - 로 시작 (들여쓰기 포함)
+      if (/^[·\-]\s*/.test(trimmed) && trimmed.length > 1) {
+        html += `<span class="bullet">${inline(trimmed)}</span>`;
+        i++;
+        continue;
+      }
+
+      // 빈 줄
+      if (trimmed === '') {
+        html += '<br>';
+        i++;
+        continue;
+      }
+
+      // 일반 텍스트 줄
+      html += `<span>${inline(line)}</span><br>`;
+      i++;
+    }
+
+    return html;
+  }
+
+  function addUserMessage(text){
+    const div = document.createElement('div');
+    div.className = 'msg user';
+    div.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
+    chat.appendChild(div);
+    scrollToBottom();
+  }
+
+  function addLoadingBubble(){
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.id = 'loadingMsg';
+    div.innerHTML = `<div class="loading-bubble"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
+    chat.appendChild(div);
+    scrollToBottom();
+    return div;
+  }
+
+  function addBotMessage(data){
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+
+    let inner = `<div class="bubble">${renderAnswer(data.answer)}</div>`;
+
+    if (data.used_placeholder_data) {
+      inner += `<div class="placeholder-warn">⚠️ 일부 수치는 검증되지 않은 예시(더미) 데이터일 수 있습니다. 실제 값은 국가법령정보센터(law.go.kr)에서 확인하세요.</div>`;
+    }
+    if (data.disclaimer) {
+      inner += `<div class="disclaimer">${escapeHtml(data.disclaimer)}</div>`;
+    }
+
+    div.innerHTML = inner;
+    chat.appendChild(div);
+    scrollToBottom();
+  }
+
+  async function sendQuery(text){
+    if (!text || !text.trim()) return;
+    addUserMessage(text);
+    input.value = '';
+    sendBtn.disabled = true;
+    const loadingEl = addLoadingBubble();
+
+    try {
+      const res = await fetch('/api/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: text }),
+      });
+      const data = await res.json();
+      loadingEl.remove();
+      addBotMessage(data);
+    } catch (err) {
+      loadingEl.remove();
+      addBotMessage({
+        answer: '서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해 주세요.',
+        disclaimer: '',
+        used_placeholder_data: false,
+      });
+    } finally {
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    sendQuery(input.value);
+  });
+
+  document.querySelectorAll('.chip[data-q]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      sendQuery(btn.getAttribute('data-q'));
+    });
+  });
+
+  input.focus();
+})();
+</script>
+</body>
+</html>
